@@ -40,7 +40,7 @@ const BlogCardContent = styled(CardContent)(({ theme }) => ({
   width: '100%',
   background: 'linear-gradient(to right, rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8))',
   color: 'white',
-  transition: 'transform 0.3s ease',
+  transition: 'transform 0.5s ease-in-out',
   transform: 'translateY(100%)',
 }));
 
@@ -54,7 +54,7 @@ const BlogsPage = () => {
 
   return (
     <Container maxWidth="xl" sx={{ pt: 5, pb: 5 }}>
-      <Typography variant="h3" align="center" gutterBottom sx={{color: "#006064"}}>
+      <Typography variant="h4" align="center" gutterBottom sx={{color: "#006064", mb:2}}>
       Insights & Inspirations
       </Typography>
       <Typography align="center" gutterBottom>

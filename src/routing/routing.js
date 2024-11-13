@@ -11,13 +11,9 @@ import BlogsPage from '../components/blogs/blogs'
 import ArtistGallery from '../components/artist/artist'
 import ReviewPage from '../components/review/review'
 import ContactPage from '../components/contact/contact'
-import { Grid } from '@mui/material'
-import ArtCategoryList from '../components/product/leftpart/leftpart'
 import ArtForm from '../components/sell/sell'
 import ArtworkGallery from '../components/product/rightpart/allproduct'
 import ArtByCategory from '../components/product/rightpart/categorywise/categorywise'
-import CartPage from '../components/add to cart/cart'
-import AddToCartPage from '../components/add to cart/cart'
 import Cart from '../components/add to cart/cart'
 import QueryPage from '../components/querypage/query'
 import PageNotFound from '../components/pnf/pnf'
@@ -38,28 +34,10 @@ function Routing() {
         <Route path="/review" element={<ReviewPage/>}/>
         <Route path="/contact" element={<ContactPage/>}/>
         <Route path="/sell" element={<ArtForm/>}/> 
-        <Route path="/artwork" element={
-        <Grid container spacing={2}>
-          <Grid item xs={0} sm={0} md={0}>
-            <ArtCategoryList />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <ArtworkGallery/>
-          </Grid>
-        </Grid>
-      } />
-      <Route path="/artwork/:type" element={
-        <Grid container spacing={2}>
-          <Grid item xs={0} sm={0} md={0}>
-            <ArtCategoryList />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <ArtByCategory/>
-          </Grid>
-        </Grid>
-      } />
-       <Route path="/cart" element={<Cart/>}/>
-       <Route path="/queries" element={<QueryPage/>}/>
+        <Route path="/artwork" element={<ArtworkGallery/>} />
+        <Route path="/artwork/:type" element={ <ArtByCategory/> } />
+        <Route path="/cart" element={<Cart/>}/>
+        <Route path="/queries" element={<QueryPage/>}/>
         </Routes>
         <Footer/>
     </Router>

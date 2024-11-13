@@ -60,7 +60,7 @@ const Cart = () => {
       ) : (
         <>
           {cart.map((item) => (
-            <Paper key={item.id} sx={{ p: 2, mb: 2, borderRadius: 2, boxShadow: 1 }}>
+            <Paper key={item.id} sx={{ p: 2, mb: 2, borderRadius: 2, boxShadow: 8 }}>
               <Box display="flex" alignItems="center" gap={2}>
                 <Box 
                   component="img" 

@@ -4,9 +4,6 @@ import Carousel from 'react-material-ui-carousel';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import StarIcon from '@mui/icons-material/Star';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TrustpilotIcon from '@mui/icons-material/VerifiedUser'; // Replace with appropriate icon
-import GoogleIcon from '@mui/icons-material/Google'; // Replace with appropriate icon
 
 const AboutPage = () => {
   const isMobile = useMediaQuery('(max-width:600px)');
@@ -40,7 +37,7 @@ const AboutPage = () => {
       {/* Heading Section */}
       <Box sx={{ textAlign: 'center', mt: 4, mb:7 }}>
         <Typography variant="h4" sx={{ mb: 2, color: "#006064" }}>
-         Gallerist
+         Gallerist....
         </Typography>
         <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
           At Gallerist, we connect art enthusiasts with a vast selection of original artwork. Our platform empowers artists and galleries to showcase their work directly to buyers, creating a vibrant community for art lovers. We believe that everyone should have access to unique, high-quality art that inspires and enriches their lives.

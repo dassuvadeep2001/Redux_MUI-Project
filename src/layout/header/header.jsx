@@ -11,9 +11,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import PaletteIcon from '@mui/icons-material/Palette';
 import TextField from '@mui/material/TextField';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import LoginPage from '../../user/login/login';
@@ -42,8 +41,7 @@ function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); 
   const isLargeScreen = useMediaQuery('(min-width:900px)'); 
   const navigate = useNavigate();
-
-  const user = useSelector((state) => state.auth.user); // Access user info from Redux
+  const location = useLocation(); // Get the current path
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -195,8 +193,10 @@ function Header() {
                   key={page.name}
                   component={Link}
                   to={page.path}
-                  sx={{ my: 2, color: '#024CAA', mr: 3 }}
-                >
+                  sx={{ my: 2, color: '#024CAA', mr: 3, 
+                  fontWeight: location.pathname === page.path ? 'bold' : 'normal'
+                  }}
+                  >
                   {page.name}
                 </Button>
               ))}
@@ -315,7 +315,9 @@ function Header() {
                 key={page.name}
                 component={Link}
                 to={page.path}
-                sx={{ my: 2, color: '#024CAA', mx: 1 }}
+                sx={{ my: 2, color: '#024CAA', mx: 1,
+                fontWeight: location.pathname === page.path ? 'bold' : 'normal'
+                 }}
               >
                 {page.name}
               </Button>

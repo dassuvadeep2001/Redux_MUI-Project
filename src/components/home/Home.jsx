@@ -324,7 +324,7 @@ function Home() {
         <Box
           key={index}
           sx={{
-            background: `linear-gradient(to right, rgba(106, 17, 203, 0.7), rgba(37, 117, 252, 0.7)), url(${item.image})`,
+            background: `linear-gradient(to right, rgba(106, 17, 203, 0.6), rgba(37, 117, 252, 0.6)), url(${item.image})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -357,7 +357,7 @@ sx={{
   color: "#006064"
 }}
 >
-        Services
+        Service We Provide...
         </Typography>
     <Box
       sx={{ 
@@ -538,7 +538,7 @@ sx={{
           p: 2 
         }}
       >
-        <Typography variant="h4" sx={{ mb: 2, color: "#006064" }}>
+        <Typography variant="h5" sx={{ mb: 2, color: "#006064" }}>
           About Gallerist
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
@@ -697,7 +697,7 @@ sx={{
             color: '#ffffff',
             fontSize: '1rem',
             padding: '10px 20px',
-            borderRadius: '20px',
+            borderRadius: '15px',
             boxShadow: '0 4px 12px rgba(31, 200, 219, 0.4)',
             '&:hover': {
               bgcolor: '#17b2c7',

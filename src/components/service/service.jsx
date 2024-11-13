@@ -8,7 +8,7 @@ const ServicePage = () => {
     <Container maxWidth="xl">
       {/* Artwork Sales and Purchasing Section */}
       <Typography variant="h4" sx={{ my: 4, color: '#006064', textAlign: 'center' }}>
-            Service We Provide..
+      Service with Heart, Solutions with Purpose
           </Typography>
       <Box
         sx={{
