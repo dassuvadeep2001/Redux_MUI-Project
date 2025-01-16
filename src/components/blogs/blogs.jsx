@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, useMediaQuery } from '@mui/material';
+import { Container, Typography, Box, Grid, Card, CardMedia, CardContent, useMediaQuery, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const topics = [
@@ -38,10 +38,11 @@ const BlogCardContent = styled(CardContent)(({ theme }) => ({
   bottom: 0,
   left: 0,
   width: '100%',
-  background: 'linear-gradient(to right, rgba(106, 17, 203, 0.8), rgba(37, 117, 252, 0.8))',
+  background: 'linear-gradient(to right, rgba(11, 121, 238, 0.88), rgba(35, 16, 237, 0.81))',
   color: 'white',
-  transition: 'transform 0.5s ease-in-out',
+  transition: 'transform 0.4s ease-in-out',
   transform: 'translateY(100%)',
+  padding: theme.spacing(0),
 }));
 
 const BlogsPage = () => {
@@ -53,45 +54,110 @@ const BlogsPage = () => {
   const isMobile = useMediaQuery('(max-width:600px)');
 
   return (
-    <Container maxWidth="xl" sx={{ pt: 5, pb: 5 }}>
-      <Typography variant="h4" align="center" gutterBottom sx={{color: "#006064", mb:2}}>
-      Insights & Inspirations
+    <Container maxWidth="lg" sx={{ pt: 5, pb: 5 }}>
+      <Typography 
+        variant="h3" 
+        align="center" 
+        gutterBottom 
+        sx={{
+          color: "#4A90E2", 
+          fontWeight: 'bold', 
+          textShadow: '2px 2px 4px rgba(0,0,0,0.3)', 
+          mb: 4
+        }}
+      >
+        Insights & Inspirations
       </Typography>
-      <Typography align="center" gutterBottom>
-      At Gallerist, we believe that every piece of art tells a story waiting to be discovered. Our curated collection features exquisite works from emerging and established artists, allowing you to find the perfect addition to your space. Whether you’re an avid collector or a first-time buyer, our team is dedicated to guiding you through the art-buying process, ensuring that each acquisition resonates with your personal taste and style. Join us in celebrating the beauty of art in everyday life.
+      <Typography 
+        align="center" 
+        gutterBottom 
+        sx={{ mx: 'auto', mb: 4, lineHeight: 1.7 }}
+      >
+        At Gallerist, we believe every piece of art tells a story. Explore exquisite works curated from emerging and established artists to find the perfect addition to your space. Let us guide you through the art-buying journey.
       </Typography>
-      
+
       {topics.map((topic) => (
-        <Box key={topic.title} sx={{ mt: 4, textAlign: "center" }}>
-          <Typography variant="h4" sx={{  mt: 6, color: "darkblue" }}>
+        <Box key={topic.title} sx={{ mt: 8, textAlign: 'center' }}>
+          <Typography 
+            variant="h4" 
+            sx={{
+              fontWeight: 'bold',
+              mb: 2,
+              color: 'darkblue',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+            }}
+          >
             {topic.title}
           </Typography>
-          <Typography sx={{  my: 4 }}>
+          <Typography 
+            sx={{
+              my: 2,
+              mx: 'auto',
+              lineHeight: 1.8,
+              color: '#5a5a5a',
+            }}
+          >
             {topic.about}
           </Typography>
-          <Grid container spacing={3}>
+
+          <Grid container spacing={4}>
             {topic.blogs.map((blog) => (
               <Grid item xs={12} sm={6} md={4} key={blog.id}>
                 <Card
-                  sx={{ position: 'relative', overflow: 'hidden', boxShadow: "5px 5px 8px grey", ml: isMobile ? 0 : 5, maxWidth: 380 }}
+                  sx={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+                    borderRadius: 3,
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 12px 24px rgba(0,0,0,0.3)',
+                    },
+                  }}
                   onMouseEnter={() => handleHover(blog.id)}
                   onMouseLeave={handleMouseLeave}
                   onClick={() => handleHover(blog.id)}
                 >
-                    <Typography variant="h6" sx={{ textAlign: "center", color: 'white', backgroundColor: "#6439FF", p: 1 }}>
-                      {blog.title}
-                    </Typography>
                   <CardMedia
                     component="img"
                     height="200"
                     image={blog.image}
                     alt={blog.title}
+                    sx={{
+                      filter: 'brightness(0.9)',
+                      transition: 'filter 0.3s ease',
+                      '&:hover': { filter: 'brightness(1.1)' },
+                    }}
                   />
-                  <Box sx={{ position: 'relative' }}>
-                    <BlogCardContent sx={{ transform: activeBlogId === blog.id ? 'translateY(0)' : 'translateY(100%)' }}>
-                      <Typography variant="body2" sx={{pl: 2, pr: 5}}>{blog.content}</Typography>
-                    </BlogCardContent>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      bottom: 0,
+                      width: '100%',
+                      backgroundColor: 'rgba(54, 67, 243, 0.67)',
+                      color: 'white',
+                      textAlign: 'center',
+                      padding: 1,
+                    }}
+                  >
+                    <Typography variant="h6">{blog.title}</Typography>
                   </Box>
+                  <BlogCardContent
+                    sx={{
+                      transform: activeBlogId === blog.id ? 'translateY(0)' : 'translateY(100%)',
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ mb: 2, p: 1 }}>
+                      {blog.content}
+                    </Typography>
+                    <Button 
+                      variant="contained" 
+                      sx={{ mt: 1, boxShadow: 'none', textTransform: 'none', color: 'blue', backgroundColor: 'white' }}
+                    >
+                      Read More
+                    </Button>
+                  </BlogCardContent>
                 </Card>
               </Grid>
             ))}
@@ -103,3 +169,4 @@ const BlogsPage = () => {
 };
 
 export default BlogsPage;
+

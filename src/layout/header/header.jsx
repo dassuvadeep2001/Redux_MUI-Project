@@ -20,6 +20,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { fetchArtCategories } from '../../slice/artworkslice/categoryslice/categoryslice';
 import SearchIcon from '@mui/icons-material/Search';
+import Badge from '@mui/material/Badge';
 
 const primaryPages = [
   { name: "The Creator's Market", path: '/sell' },
@@ -79,6 +80,8 @@ function Header() {
   };
 
   const { categories } = useSelector((state) => state.category);
+  const { cart } = useSelector((state) => state.cart); // Access cart from Redux store
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0); // Calculate total items in cart
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -205,17 +208,52 @@ function Header() {
             {/* Conditional Rendering for Login/Signup or Avatar */}
             {storedUserId && storedUserImage ? (
               <>
-               <Button
-      component={Link}
-      to="/cart"
-      endIcon={<ShoppingCartIcon />}
+                <Typography
+  variant="h6"
+  component="div"
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#024CAA', // Match the primary color theme
+    position: 'relative', // Enable absolute positioning for badge
+    fontWeight: 'bold', // Highlight the text
+    marginRight: 3,
+  }}
+>
+  <Link
+    to="/cart"
+    style={{
+      textDecoration: 'none',
+      color: '#024CAA', // Make it eye-catching with your brand color
+    }}
+  >
+    <Badge
+      badgeContent={cartItemCount}
+      color="secondary"
       sx={{
-        color: '#024CAA',
-        mr: {sm: 0, md: 2},
+        '& .MuiBadge-badge': {
+          backgroundColor: '#ff4757', // Use an attention-grabbing red
+          color: 'white',
+          fontSize: '0.6rem', // Slightly larger badge font
+          border: '2px solid white', // Add a border for better visibility
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)', // Add a subtle shadow for depth
+        },
       }}
     >
-      {isLargeScreen ? 'Cart' : null} {/* Show text only on larger screens */}
-    </Button>
+      <ShoppingCartIcon
+        sx={{
+          fontSize: '1.5rem', // Larger icon size
+          transition: 'transform 0.3s ease', // Add hover effect
+          '&:hover': {
+            transform: 'scale(1.2)', // Scale the icon on hover
+          },
+        }}
+      />
+    </Badge>
+  </Link>
+</Typography>
+
               <Tooltip title="Account settings">
                 <IconButton onClick={handleOpenProfile} sx={{ p: 0 }}>
                   <Avatar alt="User Profile" src={storedUserImage} />

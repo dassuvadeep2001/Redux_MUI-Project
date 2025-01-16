@@ -14,9 +14,9 @@
     {
       "id": "80c9",
       "username": "Bittu2001",
-      "fullname": "Bittu Das",
+      "fullname": "Bittu dutta",
       "email": "bittudas2001@gmail.com",
-      "address": "Saltlake Sector V",
+      "address": "Tollygunge",
       "phone": "6291737979",
       "password": "12345678",
       "usertype": "user",
@@ -1034,6 +1034,12 @@
       "name": "Olivia Thomas",
       "email": "oliviathomas@email.com",
       "query": "Can I create a custom order with the artist on your site?"
+    },
+    {
+      "id": "945b",
+      "name": "Suvadeep Das",
+      "email": "suvadeepdas15@gmail.com",
+      "query": "what is the use of this website"
     }
   ]
 }

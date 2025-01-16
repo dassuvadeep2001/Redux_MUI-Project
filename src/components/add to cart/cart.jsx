@@ -38,9 +38,9 @@ const Cart = () => {
       <Typography variant="h5" sx={{ mb: 3, color: '#006064', fontWeight: 'bold', textAlign: 'center' }}>
         Shopping Bag
       </Typography>
-      <Typography variant="subtitle1" sx={{ mb: 3, color: 'text.secondary', textAlign: 'center' }}>
+      {/* <Typography variant="subtitle1" sx={{ mb: 3, color: 'text.secondary', textAlign: 'center' }}>
         {cart.length} items in your bag.
-      </Typography>
+      </Typography> */}
 
       {cart.length === 0 ? (
         <Box textAlign="center" p={4}>
@@ -59,35 +59,95 @@ const Cart = () => {
         </Box>
       ) : (
         <>
-          {cart.map((item) => (
-            <Paper key={item.id} sx={{ p: 2, mb: 2, borderRadius: 2, boxShadow: 8 }}>
-              <Box display="flex" alignItems="center" gap={2}>
-                <Box 
-                  component="img" 
-                  src={item.image} 
-                  alt={item.title} 
-                  sx={{ width: 100, height: 100, borderRadius: 2, objectFit: 'cover' }}
-                />
-                <Box flex="1">
-                  <Typography variant="subtitle1" fontWeight="bold">{item.title}</Typography>
-                </Box>
-                <Typography variant="subtitle1" sx={{ minWidth: 80, textAlign: 'center' }}>
-                  ${item.price.toFixed(2)}
-                </Typography>
-                <Box display="flex" alignItems="center">
-                  <Button variant="outlined" onClick={() => decrement(item.id)}>-</Button>
-                  <Typography variant="body1" sx={{ mx: 1 }}>{item.quantity}</Typography>
-                  <Button variant="outlined" onClick={() => increment(item.id)}>+</Button>
-                </Box>
-                <Typography variant="subtitle1" fontWeight="bold" color="primary" sx={{ minWidth: 80, textAlign: 'center' }}>
-                  ${(item.price * item.quantity).toFixed(2)}
-                </Typography>
-                <Button color="error" onClick={() => remove(item.id)}>
-                  <DeleteIcon />
-                </Button>
-              </Box>
-            </Paper>
-          ))}
+{cart.map((item) => (
+  <Paper
+    key={item.id}
+    sx={{
+      p: 2,
+      mb: 2,
+      borderRadius: 2,
+      boxShadow: 8,
+    }}
+  >
+    <Box
+      display="flex"
+      flexDirection={{ xs: 'column', sm: 'row' }} // Switch layout for small screens
+      alignItems="center"
+      gap={2}
+    >
+      {/* Image */}
+      <Box
+        component="img"
+        src={item.image}
+        alt={item.title}
+        sx={{
+          width: { xs: 100, sm: 100 },
+          height: 100,
+          borderRadius: 2,
+          objectFit: 'cover',
+        }}
+      />
+      
+      {/* Title */}
+      <Box flex="1" textAlign={{ xs: 'center', sm: 'left' }}>
+        <Typography variant="subtitle1" fontWeight="bold">
+          {item.title}
+        </Typography>
+      </Box>
+
+      {/* Price */}
+      <Typography
+        variant="subtitle1"
+        sx={{
+          minWidth: 80,
+          textAlign: 'center',
+          display: { xs: 'none', sm: 'block' }, // Hide price in small screens, optional
+        }}
+      >
+        ${item.price.toFixed(2)}
+      </Typography>
+
+      {/* Quantity Controls */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent={{ xs: 'center', sm: 'flex-start' }}
+      >
+        <Button variant="outlined" onClick={() => decrement(item.id)}>-</Button>
+        <Typography variant="body1" sx={{ mx: 1 }}>
+          {item.quantity}
+        </Typography>
+        <Button variant="outlined" onClick={() => increment(item.id)}>+</Button>
+      </Box>
+
+      {/* Total Price */}
+      <Typography
+        variant="subtitle1"
+        fontWeight="bold"
+        color="primary"
+        sx={{
+          minWidth: 80,
+          textAlign: 'center',
+          mt: { xs: 1, sm: 0 }, // Add top margin on small screens
+        }}
+      >
+        ${(item.price * item.quantity).toFixed(2)}
+      </Typography>
+
+      {/* Delete Button */}
+      <Button
+        color="error"
+        onClick={() => remove(item.id)}
+        sx={{
+          mt: { xs: 0, sm: 0 }, // Add top margin on small screens
+        }}
+      >
+        <DeleteIcon />
+      </Button>
+    </Box>
+  </Paper>
+))}
+
 
           <Divider sx={{ my: 3 }} />
 

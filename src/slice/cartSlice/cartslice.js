@@ -90,15 +90,15 @@ const cartSlice = createSlice({
 
     // Action to decrement quantity of a cart item
     decrementQty: (state, { payload }) => {
-      state.cart = state.cart.map((item) => {
-        if (item.id === payload) {
-          item.quantity--;
-          item.newprice = item.quantity * item.price;
-          return item;
-        } else {
-          return item;
-        }
-      });
+        state.cart = state.cart
+          .map((item) => {
+            if (item.id === payload) {
+              item.quantity--;
+              item.newprice = item.quantity * item.price;
+            }
+            return item;
+          })
+          .filter((item) => item.quantity > 0); // Remove items with quantity 0
       
       // Recalculate total price after decrementing quantity
       state.Totalprice = state.cart.reduce((accum, item) => {
