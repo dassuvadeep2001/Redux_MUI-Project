@@ -1,5 +1,5 @@
 // components/ArtByCategory.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Grid, Paper, Typography, Box, Modal, IconButton, Menu, MenuItem } from '@mui/material';
@@ -16,6 +16,7 @@ const ArtByCategory = () => {
     const navigate = useNavigate();
     const { type } = useParams();
     const { art, artpageStatus, artpageError } = useSelector((state) => state.art);
+    const { cart } = useSelector((state) => state.cart); // Access cart items from Redux store
 
     const [open, setOpen] = useState(false);
     const [selectedArt, setSelectedArt] = useState(null);
@@ -72,17 +73,24 @@ const ArtByCategory = () => {
     const handleSortClick = (event) => setAnchorEl(event.currentTarget);
     const handleSortClose = () => setAnchorEl(null);
 
+    const sortTimeout = useRef(null); // Ref for debouncing sorting
     const handleSort = (type) => {
-        let sorted = [];
-        if (type === 'az') {
-            sorted = [...art].sort((a, b) => a.name.localeCompare(b.name));
-        } else if (type === 'lowToHigh') {
-            sorted = [...art].sort((a, b) => a.price - b.price);
-        } else if (type === 'highToLow') {
-            sorted = [...art].sort((a, b) => b.price - a.price);
+        if (sortTimeout.current) {
+            clearTimeout(sortTimeout.current); // Clear the previous timeout if it exists
         }
-        setSortedArt(sorted);
-        handleSortClose();
+
+        sortTimeout.current = setTimeout(() => {
+            let sorted = [];
+            if (type === 'az') {
+                sorted = [...art].sort((a, b) => a.name.localeCompare(b.name));
+            } else if (type === 'lowToHigh') {
+                sorted = [...art].sort((a, b) => a.price - b.price);
+            } else if (type === 'highToLow') {
+                sorted = [...art].sort((a, b) => b.price - a.price);
+            }
+            setSortedArt(sorted);
+            handleSortClose();
+        }, 1000); // Delay execution by 300ms
     };
 
     if (artpageStatus === 'loading') {
@@ -92,6 +100,8 @@ const ArtByCategory = () => {
     if (artpageStatus === 'failed') {
         return <div>Error: {artpageError}</div>;
     }
+
+    const isItemInCart = selectedArt && cart.some((item) => item.id === selectedArt.id); // Check if item is in the cart
 
     return (
         <Container maxWidth="lg" sx={{ mb: 5, mt:6 }}>
@@ -180,25 +190,54 @@ const ArtByCategory = () => {
                             <Typography variant="body2" color="textSecondary">
                                 Painting by {selectedArt.username}
                             </Typography>
-                            <Box display="flex" justifyContent="space-between">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                    endIcon={<ShoppingCartIcon />}
-                                    onClick={handleAddToCart}
-                                >
-                                    Add to Cart
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    onClick={handleClose}
-                                    sx={{ mt: 2 }}
-                                    endIcon={<CloseIcon />}
-                                >
-                                    Close
-                                </Button>
-                            </Box>
+                            {isItemInCart ? (
+                  <>
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <Typography variant="body2" sx={{ mt: 2, color: "red" }}>
+                      This product is already in your cart.
+                    </Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{ mt: 2 }}
+                      onClick={() => navigate('/cart')}
+                      endIcon={<ShoppingCartIcon />}
+                    >
+                      Go to Cart
+                    </Button>
+                    <Button
+                  variant="outlined"
+                  onClick={handleClose}
+                  sx={{ mt: 2 }}
+                  endIcon={<CloseIcon />}
+                >
+                  Close
+                </Button>
+                </Box>
+                </Box>
+                  </>
+                ) : (
+                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    endIcon={<ShoppingCartIcon />}
+                    onClick={handleAddToCart}
+                  >
+                    Add to Cart
+                  </Button>
+                  <Button
+                  variant="outlined"
+                  onClick={handleClose}
+                  sx={{ mt: 2 }}
+                  endIcon={<CloseIcon />}
+                >
+                  Close
+                </Button>
+                </Box>
+                )}
                         </>
                     )}
                 </Box>

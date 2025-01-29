@@ -31,8 +31,10 @@ const ReviewPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // State for login modal
   const [imageBase64, setImageBase64] = useState(null);
+  const [imageError, setImageError] = useState("");
 
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
+
 
   useEffect(() => {
     dispatch(fetchReviews());
@@ -143,15 +145,30 @@ const ReviewPage = () => {
             }}
           >
             <img
-              src={review.image}
-              alt={review.name}
-              style={{
-                borderRadius: '50%',
-                width: isMobile ? '80px' : '100px',
-                height: isMobile ? '80px' : '100px',
-                objectFit: 'cover',
-              }}
-            />
+  src={review.image || undefined}
+  alt={review.name}
+  style={{
+    borderRadius: '50%',
+    width: isMobile ? '80px' : '100px',
+    height: isMobile ? '80px' : '100px',
+    objectFit: 'cover',
+    backgroundColor: review.image ? 'transparent' : '#e0e0e0',
+    display: review.image ? 'block' : 'none',
+  }}
+/>
+{!review.image && (
+  <Avatar
+    sx={{
+      width: isMobile ? '80px' : '100px',
+      height: isMobile ? '80px' : '100px',
+      bgcolor: '#006064',
+      fontSize: isMobile ? '24px' : '32px',
+    }}
+  >
+    {review.name?.charAt(0).toUpperCase()}
+  </Avatar>
+)}
+
             <Typography variant={isMobile ? 'h6' : 'h5'} sx={{mt: 2}} >
               {review.name}
             </Typography>
@@ -175,31 +192,45 @@ const ReviewPage = () => {
         </Typography>
       <Grid container spacing={2}>
         {sellerReviews.map(review => (
-          <Grid item xs={12} sm={6} md={4} key={review.id}>
-            <Card style={{ margin: '10px', padding: '10px', boxShadow:"5px 5px 10px grey" }}>
-  <CardContent style={{ display: 'flex', alignItems: 'flex-start' }}>
-    {/* Display Avatar with adjusted size */}
-    {review.image ? (
-      <img
-        src={review.image}
-        alt="User"
-        style={{ width: '80px', height: '80px', borderRadius: '50%', marginRight: '10px' }} // Adjust image size here
-      />
-    ) : (
-      <Avatar style={{ width: '60px', height: '60px', marginRight: '10px' }}>
-        {review.fullName.charAt(0)} {/* Display initial if no image */}
-      </Avatar>
-    )}
-    <div style={{ flexGrow: 1 }}>
-      <Typography variant="h6">{review.name}</Typography>
-      <Typography variant="caption">{review.address}</Typography><br/>
-      <Rating value={review.rating} readOnly />
-      <Typography variant="body1">{review.review}</Typography>
-    </div>
-  </CardContent>
-</Card>
+      <Grid item xs={12} sm={6} md={4} key={review.id}>
+      <Card style={{ margin: '10px', padding: '10px', boxShadow: "5px 5px 10px grey" }}>
+        <CardContent style={{ display: 'flex', alignItems: 'flex-start' }}>
+          {/* Display Avatar with adjusted size */}
+          {review.image ? (
+  <img
+    src={review.image}
+    alt="User"
+    style={{
+      width: '80px',
+      height: '80px',
+      borderRadius: '50%',
+      marginRight: '10px',
+    }}
+  />
+) : (
+  <Avatar
+    sx={{
+      width: '80px',
+      height: '80px',
+      marginRight: '10px',
+      bgcolor: '#006064',
+      fontSize: '32px',
+    }}
+  >
+    {review.name?.charAt(0).toUpperCase()}
+  </Avatar>
+)}
 
-          </Grid>
+          <div style={{ flexGrow: 1 }}>
+            <Typography variant="h6">{review.name}</Typography>
+            <Typography variant="caption">{review.address}</Typography><br />
+            <Rating value={review.rating} readOnly />
+            <Typography variant="body1">{review.review}</Typography>
+          </div>
+        </CardContent>
+      </Card>
+    </Grid>
+    
         ))}
       </Grid>
 
@@ -210,76 +241,131 @@ const ReviewPage = () => {
           {isLoading && <CircularProgress />}
           {error && <Typography color="error">Error: {error}</Typography>}
           <form onSubmit={handleSubmit(handleAddReview)}>
-          <TextField
-              {...register('name', { required: true })}
-              label="Full Name"
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              {...register('address')}
-              label="Address"
-              fullWidth
-              margin="normal"
-            />
-            <Typography variant="subtitle1" sx={{my: 1, color: "grey", textAlign: "center"}}>
-             Rate Us
-            </Typography>
-           <Controller
-              name="rating"
-              control={control}
-              defaultValue={0}
-              rules={{ required: true }}
-              render={({ field }) => (
-              <Rating
-              {...field}
-              precision={0.5}
-              onChange={(_, value) => field.onChange(value)} // Update form value on change
-              sx={{mx: "auto", justifyContent: "center", display: "flex"}}/>
-               )}
-            />
-            <TextField
-              {...register('review', { required: true })}
-              label="Review"
-              multiline
-              rows={3}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              {...register('type', { required: true })}
-              select
-              label="Type"
-              fullWidth
-              margin="normal"
-              SelectProps={{
-                native: true,
-              }}
-            >
-              <option value="buyer">Buyer</option>
-              <option value="seller">Seller</option>
-            </TextField>
-            <Button
-            variant="outlined"
-            component="label"
-            sx={{ mt: 1, width: "100%" }}
-          >
-            Upload Your Image
-            <input
-              type="file"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button> <br/>
-          {imageBase64 && (
-            <Box mt={2}>
-              <img src={imageBase64} alt="Profile Preview" style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
-            </Box>
-          )}
-            <Button type="submit" variant="contained" sx={{ mt: 4, width: "100%" }} >
-            {isLoading ? <CircularProgress size={24} /> : 'submit'}
-            </Button>
-          </form>
+  <TextField
+    {...register('name', { required: 'Full Name is required' })}
+    label="Full Name"
+    fullWidth
+    margin="normal"
+    error={!!errors.name}
+    helperText={errors.name?.message}
+  />
+  <TextField
+    {...register('address', { required: 'Address is required' })}
+    label="Address"
+    fullWidth
+    margin="normal"
+    error={!!errors.address}
+    helperText={errors.address?.message}
+  />
+  <Typography
+    variant="subtitle1"
+    sx={{ my: 1, color: 'grey', textAlign: 'center' }}
+  >
+    Rate Us
+  </Typography>
+  <Controller
+  name="rating"
+  control={control}
+  defaultValue={0}
+  rules={{
+    required: 'Rating is required',
+    validate: (value) => value > 0 || 'Rating is required',
+  }}
+  render={({ field }) => (
+    <Rating
+      {...field}
+      precision={0.5}
+      onChange={(_, value) => field.onChange(value)} // Update form value on change
+      sx={{ mx: 'auto', justifyContent: 'center', display: 'flex' }}
+    />
+  )}
+/>
+{errors.rating && (
+  <Typography
+    variant="caption"
+    color="error"
+    sx={{ display: 'block', textAlign: 'center', mt: 1 }}
+  >
+    {errors.rating.message}
+  </Typography>
+)}
+
+  <TextField
+    {...register('review', { required: 'Review is required' })}
+    label="Review"
+    multiline
+    rows={3}
+    fullWidth
+    margin="normal"
+    error={!!errors.review}
+    helperText={errors.review?.message}
+  />
+  <TextField
+    {...register('email', {
+      required: 'Email is required',
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: 'Please enter a valid email address',
+      },
+    })}
+    label="Email"
+    fullWidth
+    margin="normal"
+    error={!!errors.email}
+    helperText={errors.email?.message}
+  />
+  <TextField
+    {...register('type', { required: 'Type is required' })}
+    select
+    label="Type"
+    fullWidth
+    margin="normal"
+    error={!!errors.type}
+    helperText={errors.type?.message}
+    SelectProps={{
+      native: true,
+    }}
+  >
+    <option value="buyer">Buyer</option>
+    <option value="seller">Seller</option>
+  </TextField>
+    <Button variant="outlined" component="label" fullWidth>
+      Upload Image
+      <input
+        type="file"
+        hidden
+        accept="image/jpeg, image/png, image/jpg, image/webp"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const validFormats = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+            if (validFormats.includes(file.type)) {
+              handleImageChange(e); // Your existing function to handle the image
+              setImageError(""); // Clear any previous error message
+            } else {
+              setImageError("Invalid file format. Please upload a JPG, JPEG, PNG, or WEBP file.");
+            }
+          }
+        }}
+      />
+    </Button>
+    {imageError && (
+      <Typography color="error" sx={{ mt: 1 }}>
+        {imageError}
+      </Typography>
+    )}
+  
+  {imageBase64 && (
+    <Box sx={{ textAlign: 'center' }}>
+      <img src={imageBase64} alt="Selected" style={{ maxWidth: '100%', height: 'auto', borderRadius: 4 }} />
+    </Box>
+  )}
+
+  <Button type="submit" variant="contained" sx={{ mt: 4, width: '100%' }}>
+    {isLoading ? <CircularProgress size={24} /> : 'Submit'}
+  </Button>
+</form>
+
         </div>
       </Drawer>
 

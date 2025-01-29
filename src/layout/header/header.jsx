@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -43,6 +43,7 @@ function Header() {
   const isLargeScreen = useMediaQuery('(min-width:900px)'); 
   const navigate = useNavigate();
   const location = useLocation(); // Get the current path
+  const debounceTimeout = useRef(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -104,9 +105,15 @@ function Header() {
   };
 
   const handleSearch = () => {
-    if (selectedCategory) {
-      navigate(`/artwork/${selectedCategory}`);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current); // Clear any previously set timeout
     }
+  
+    debounceTimeout.current = setTimeout(() => {
+      if (selectedCategory) {
+        navigate(`/artwork/${selectedCategory}`);
+      }
+    }, 1000); // Adjust the debounce delay (e.g., 300ms)
   };
 
   return (

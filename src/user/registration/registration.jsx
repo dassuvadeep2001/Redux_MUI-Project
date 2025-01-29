@@ -10,7 +10,6 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const [profilePicBase64, setProfilePicBase64] = useState(null);
   const { isLoading, error } = useSelector((state) => state.auth);
   
 
@@ -22,7 +21,8 @@ const RegistrationForm = () => {
     };
     dispatch(userReg(submissionData))
       .then((res) => {
-        if (res.payload.status === 201 || res.payload.status === 200) {
+        console.log("Response from userReg:", res);
+        if (res.meta.requestStatus === "fulfilled") {
           Swal.fire({
             icon: "success",
             title: "CONGRATULATIONS",
@@ -46,16 +46,28 @@ const RegistrationForm = () => {
       });
   };
 
-  const handleImageChange = (e) => {
+  const [profilePicBase64, setProfilePicBase64] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  const handleImageChangeWithValidation = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage('Only JPG, JPEG, PNG, and WEBP files are allowed');
+        return;
+      }
+      setErrorMessage(''); // Clear error if file type is valid
+  
+      // Convert image to Base64
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicBase64(reader.result);
+      reader.onload = (event) => {
+        setProfilePicBase64(event.target.result);
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   return (
     <Box
@@ -115,11 +127,17 @@ const RegistrationForm = () => {
           />
 
           <TextField
-            label="Phone"
-            {...register('phone', { required: 'Phone is required' })}
+              label="Phone"
+                {...register('phone', { 
+                 required: 'Phone is required', 
+                pattern: {
+                value: /^\d{10}$/, 
+                message: 'Phone must be exactly 10 digits'
+                } 
+            })}
             error={!!errors.phone}
             helperText={errors.phone?.message}
-          />
+/>
 
           <TextField
             label="Password"
@@ -132,23 +150,33 @@ const RegistrationForm = () => {
             helperText={errors.password?.message}
           />
 
-          <Button
-            variant="contained"
-            component="label"
-            sx={{ mt: 1, backgroundColor: '#024CAA', color: 'white' }}
-          >
-            Upload Profile Image
-            <input
-              type="file"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button>
-          {profilePicBase64 && (
-            <Box mt={2}>
-              <img src={profilePicBase64} alt="Profile Preview" style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
-            </Box>
-          )}
+<Button
+  variant="contained"
+  component="label"
+  sx={{ mt: 1, backgroundColor: '#024CAA', color: 'white' }}
+>
+  Upload Profile Image
+  <input
+    type="file"
+    hidden
+    accept=".jpg, .jpeg, .webp, .png" // Restricts file types in the file picker
+    onChange={(e) => handleImageChangeWithValidation(e)}
+  />
+</Button>
+{errorMessage && (
+  <Box mt={1} color="red">
+    {errorMessage}
+  </Box>
+)}
+{profilePicBase64 && (
+  <Box mt={2}>
+    <img
+      src={profilePicBase64}
+      alt="Profile Preview"
+      style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+    />
+  </Box>
+)}
 
           <Button
             type="submit"

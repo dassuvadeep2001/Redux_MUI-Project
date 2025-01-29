@@ -20,7 +20,7 @@ import { postQuery } from '../../slice/contactslice/constactslice';
 const ContactPage = () => {
   const dispatch = useDispatch();
   const userId = localStorage.getItem('userId');
-  const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit, register, reset, formState: { errors } } = useForm();
   const {isLoading,
     queries,
     error,
@@ -161,14 +161,22 @@ const ContactPage = () => {
                   label="Name"
                   variant="outlined"
                   margin="normal"
-                  {...register('name', { required: true })}
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                  {...register('name', { required: "Name is required" })}
                 />
                 <TextField
                   fullWidth
-                  label="Email or Phone"
+                  label="Email"
                   variant="outlined"
                   margin="normal"
-                  {...register('email', { required: true })}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  {...register('email', { required: "Email is required", 
+                    pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Please enter a valid email address',
+                  }})}
                 />
                 <TextField
                   fullWidth
@@ -177,7 +185,9 @@ const ContactPage = () => {
                   margin="normal"
                   multiline
                   rows={3}
-                  {...register('query', { required: true })}
+                  error={!!errors.query}
+                  helperText={errors.query?.message}
+                  {...register('query', { required: "Query is required" })}
                 />
                 <Button
                   variant="contained"

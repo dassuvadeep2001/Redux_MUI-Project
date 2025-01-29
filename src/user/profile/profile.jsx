@@ -16,7 +16,7 @@ function Profile() {
   const [profilePicBase64, setProfilePicBase64] = useState(null);
   
   // React Hook Form setup
-  const { register, handleSubmit, reset, setValue } = useForm({
+  const { register, handleSubmit, reset, formState: { errors }, setError, clearErrors } = useForm({
     defaultValues: userValue,
   });
 
@@ -152,59 +152,123 @@ function Profile() {
 
       {/* Drawer for Edit Profile */}
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer}>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          sx={{ width: 400, p: 3 }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Edit Profile
-          </Typography>
-          <TextField
-            label="Full Name"
-            fullWidth
-            margin="normal"
-            {...register("fullname")}
-          />
-          <TextField
-            label="Email"
-            fullWidth
-            margin="normal"
-            {...register("email")}
-          />
-          <TextField
-            label="Phone"
-            fullWidth
-            margin="normal"
-            {...register("phone")}
-          />
-          <TextField
-            label="Address"
-            fullWidth
-            margin="normal"
-            {...register("address")}
-          />
-          <Button
-            variant="outlined"
-            component="label"
-            sx={{ mt: 1, color: '#024CAA', width: "100%" }}
-          >
-            Upload Profile Image
-            <input
-              type="file"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button>
-          {profilePicBase64 && (
-            <Box mt={2}>
-              <img src={profilePicBase64} alt="Profile Preview" style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
-            </Box>
-          )}
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-            Save Changes
-          </Button>
-        </Box>
+      <Box
+  component="form"
+  onSubmit={handleSubmit(onSubmit)}
+  sx={{ width: 400, p: 3 }}
+>
+  <Typography variant="h6" sx={{ mb: 2 }}>
+    Edit Profile
+  </Typography>
+
+  {/* Full Name */}
+  <TextField
+    label="Full Name"
+    fullWidth
+    margin="normal"
+    {...register("fullname", { required: "Full Name is required" })}
+    error={!!errors.fullname}
+    helperText={errors.fullname?.message}
+  />
+
+  {/* Email */}
+  <TextField
+    label="Email"
+    fullWidth
+    margin="normal"
+    {...register("email", {
+      required: "Email is required",
+      pattern: {
+        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        message: "Enter a valid email address",
+      },
+    })}
+    error={!!errors.email}
+    helperText={errors.email?.message}
+  />
+
+  {/* Phone */}
+  <TextField
+    label="Phone"
+    fullWidth
+    margin="normal"
+    {...register("phone", {
+      required: "Phone number is required",
+      pattern: {
+        value: /^\d{10}$/,
+        message: "Phone number must be 10 digits",
+      },
+    })}
+    error={!!errors.phone}
+    helperText={errors.phone?.message}
+  />
+
+  {/* Address */}
+  <TextField
+    label="Address"
+    fullWidth
+    margin="normal"
+    {...register("address", { required: "Address is required" })}
+    error={!!errors.address}
+    helperText={errors.address?.message}
+  />
+
+  {/* password */}
+  <TextField
+    label="Password"
+    fullWidth
+    margin="normal"
+    {...register("password", { required: "Password is required" })}
+    error={!!errors.password}
+    helperText={errors.password?.message}
+  />
+
+  {/* Profile Image */}
+  <Button
+    variant="outlined"
+    component="label"
+    sx={{ mt: 1, color: "#024CAA", width: "100%" }}
+  >
+    Upload Profile Image
+    <input
+      type="file"
+      hidden
+      accept=".jpg,.jpeg,.png,.webp"
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const validExtensions = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+          if (!validExtensions.includes(file.type)) {
+            setError("profileImage", { message: "Only JPG, JPEG, PNG, or WEBP files are allowed" });
+            return;
+          }
+          clearErrors("profileImage");
+          handleImageChange(e); // Existing image change logic
+        }
+      }}
+    />
+  </Button>
+  {errors.profileImage && (
+    <Typography color="error" sx={{ mt: 1 }}>
+      {errors.profileImage.message}
+    </Typography>
+  )}
+  {profilePicBase64 && (
+    <Box mt={2}>
+      <img
+        src={profilePicBase64}
+        alt="Profile Preview"
+        style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+      />
+    </Box>
+  )}
+
+  {/* Save Changes Button */}
+  <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+    Save Changes
+  </Button>
+</Box>
+
       </Drawer>
     </Box>
   );
